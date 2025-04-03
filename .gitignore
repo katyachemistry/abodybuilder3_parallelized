@@ -176,3 +176,11 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python
 output
 zenodo
+
+# parallelized
+./parallelized/__pycache__
+./parallelized/thera_abs
+./parallelized/trial_output
+"./parallelized/AB Data - TAP CST.csv"
+./parallelized/*ipynb
+./parallelized/*txt

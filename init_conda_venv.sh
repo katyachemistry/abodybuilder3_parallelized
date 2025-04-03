@@ -13,11 +13,19 @@ else
     environment="environment_cpu.yml"
 fi
 
-PIP_REQUIRE_VIRTUALENV=false conda env create -f ${environment} --prefix .venv
+# Create a properly registered Conda environment
+env_name="abb3"  # Change this to your preferred name
+PIP_REQUIRE_VIRTUALENV=false conda env create -f ${environment} --name ${env_name}
 
+# Initialize Conda in the shell
 eval "$(conda shell.bash hook)"
-conda activate .venv/
+
+# Activate the environment
+conda activate ${env_name}
+
+# Confirm Python version
 python --version
 
-# install pip dependencies
+# Install pip dependencies
 PIP_REQUIRE_VIRTUALENV=false pip install -e ".[dev]" --constraint pinned-versions.txt
+

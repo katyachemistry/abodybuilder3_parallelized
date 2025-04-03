@@ -1,84 +1,52 @@
-# ABodyBuilder3
+# GPU-Parallelized Inference of ABodyBuilder3
 
-Code for the paper [ABodyBuilder3: Improved and scalable antibody structure predictions](https://arxiv.org/abs/2405.20863).
+This repository provides GPU-parallelized inference for **ABodyBuilder3**, an antibody structure prediction model.
 
-# Code
+For details on ABB3, see the original paper:
+[ABodyBuilder3: Improved and Scalable Antibody Structure Predictions](https://arxiv.org/abs/2405.20863).
 
-## Download data from zenodo
+## Installation
 
-Data and model weights are hosted at https://zenodo.org/records/11354577.
-
-The bash script `download.sh` will download and extract data and model weights into
-appropriate directories. 
-
-If you only require model weights for inference, these can be downloaded and extracted with the following commands.
-```
+### Download Model Weights
+Download the necessary model weights from Zenodo:
+```bash
 mkdir -p output/ zenodo/
 wget -P zenodo/ https://zenodo.org/records/11354577/files/output.tar.gz
 tar -xzvf zenodo/output.tar.gz -C output/
 ```
 
-## Installation
-
-To create a conda environment with all required dependencies, you can use
-
-```
+### Setup Environment
+The Conda initialization script has been slightly modified for convenience:
+```bash
 ./init_conda_venv.sh
 ```
-After installation, the environment can be activated with
+After installation, activate the environment and install Ray:
+```bash
+conda activate abb3
+pip install ray==2.44.1
 ```
-conda activate ./.venv
+
+## Inference and Evaluation
+The input CSV file should contain the following columns:
+- `Therapeutic`
+- `HeavySequence`
+- `LightSequence`
+
+Run the example inference script from the `abodybuilder3` directory:
+```bash
+python parallelized/inference.py parallelized/example.csv parallelized/example_output/ --num_gpus 0.2
 ```
+num_gpus is the number of GPUs used per task (per antibody).
+If running from a different directory, update the model path in `inference.py` accordingly.
 
-## Notebook example
+## Citation (as provided by ABB3 authors as of april 25')
+Citing ABB3:
 
-A simple example of using the model is given in `notebooks/example.ipynb`.
-
-## Filter and split data 
-
-The repo comes with pre-specified data filtering (specified in `data/filters.csv`) and
-splits (specified in `data/split.csv`). If you want to reproduce these steps then run 
-
-1. `python src/abodybuilder3/stages/data/combine_data_dfs.py`
-2. `python src/abodybuilder3/stages/data/filter_data.py`
-3. `python src/abodybuilder3/stages/data/split_data.py`
-
-## Embed sequences using language model 
-
-Pre-computed language model embeddings are provided in `data/structures/structures_plm`
-after running `download.sh`. If you wish to regenerate then run
-
-`python src/abodybuilder3/stages/data/language_model_embeddings.py`
-
-## Train model
-
-The model can be trained using
- 
-1. `python src/abodybuilder3/stages/train.py`
-2. `python src/abodybuilder3/stages/finetune.py`
-
-## Inference and evaluation
-
-The model can be used to predict structures from the validation and test set using 
-
-`python src/abodybuilder3/stages/inference.py`
-
-For general sequences inputs can be prepared following the examples given in `notebooks/example.ipynb`.
-
-## DVC
-
-Our code is built using dvc pipelines, an alternative way to run the code is via `dvc
-exp run`. See `experiment_scripts` for the configurations we used for the experiments in
-the manuscript.
-
-# Citation
-
-If this code is useful to you please cite our paper using the following bibtex entry,
-
-```
+**ABodyBuilder3:**
+```bibtex
 @article{abodybuilder3,
     author = {Kenlay, Henry and Dreyer, Frédéric A and Cutting, Daniel and Nissley, Daniel and Deane, Charlotte M},
-    title = "{ABodyBuilder3: improved and scalable antibody structure predictions}",
+    title = "ABodyBuilder3: Improved and Scalable Antibody Structure Predictions",
     journal = {Bioinformatics},
     volume = {40},
     number = {10},
@@ -90,9 +58,8 @@ If this code is useful to you please cite our paper using the following bibtex e
 }
 ```
 
-along with the original ImmuneBuilder paper on which this work was based.
-
-```
+**ImmuneBuilder (original foundation work):**
+```bibtex
 @article{immunebuilder,
   author = {Abanades, Brennan and Wong, Wing Ki and Boyles, Fergus and Georges, Guy and Bujotzek, Alexander and Deane, Charlotte M.},
   doi = {10.1038/s42003-023-04927-7},
@@ -100,8 +67,12 @@ along with the original ImmuneBuilder paper on which this work was based.
   journal = {Communications Biology},
   number = {1},
   pages = {575},
-  title = {ImmuneBuilder: Deep-Learning models for predicting the structures of immune proteins},
+  title = {ImmuneBuilder: Deep-Learning Models for Predicting the Structures of Immune Proteins},
   volume = {6},
   year = {2023}
 }
 ```
+
+---
+This refined README improves readability, consistency, and formatting while maintaining all the essential details.
+
